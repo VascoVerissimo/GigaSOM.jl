@@ -28,7 +28,7 @@ function initGigaSOM( train, xdim, ydim = xdim;
     train, normParams = normTrainData(train, norm)
 
     # initialise the codes with random samples
-    codes = rowSample(train, numCodes)
+    codes = train[rand(1:size(train,1), numCodes),:]
     grid = gridRectangular(xdim, ydim)
 
     normParams = convert(DataFrame, normParams)
@@ -172,7 +172,7 @@ function doEpoch(x::Array{Float32}, codes::Array{Float32}, dm::Array{Float32},
      for s in 1:numDat
 
          sampl = vec(x[s, : ])
-         bmu_idx, bmu_vec = find_bmu(codes, sampl)
+         bmu_idx, bmu_vec = findBmu(codes, sampl)
 
          # for each node in codebook get distances to bmu and multiply it
          # with sample row: x(i)
@@ -259,6 +259,10 @@ end
 
 Return the index of the winner neuron for each training pattern
 in x (row-wise).
+
+# Arguments
+- `codes`: Codebook
+- `x`: training Data
 """
 function visual(codes, x)
 
@@ -275,6 +279,10 @@ end
     makePopulation(numCodes, vis)
 
 Return a vector of neuron populations.
+
+# Arguments
+- `numCodes`: total number of neurons
+- `vis`: index of the winner neuron for each training pattern in x
 """
 function makePopulation(numCodes, vis)
 
@@ -291,6 +299,11 @@ end
     makeClassFreqs(som, vis, classes)
 
 Return a DataFrame with class frequencies for all neurons.
+
+# Arguments
+- `som`: a trained SOM
+- `vis`: index of the winner neuron for each training pattern in x
+- `classes`: Name of column with class information
 """
 function makeClassFreqs(som, vis, classes)
 
@@ -341,7 +354,11 @@ end
 
 """
     findWinner(cod, sampl)
+
 Return index of the winner neuron for sample sampl.
+
+# Arguments
+
 """
 function findWinner(cod, sampl)
 
@@ -363,11 +380,18 @@ end
 
 
 """
-    Find the best matching unit for a given vector, row_t, in the SOM
-    Returns: A (bmu, bmu_idx) tuple where bmu is the high-dimensional
-            Best Matching Unit and bmu_idx is the index of this vector in the SOM
+    findBmu(cod, sampl)
+
+Find the best matching unit for a given vector, row_t, in the SOM
+
+# Arguments
+
+
+Returns: A (bmu, bmu_idx) tuple where bmu is the high-dimensional
+Best Matching Unit and bmu_idx is the index of this vector in the SOM
+
 """
-function find_bmu(cod, sampl)
+function findBmu(cod, sampl)
 
     dist = floatmax()
     winner = 1
@@ -388,7 +412,7 @@ end
 
 
 """
-    normTrainData(train::DataFrame, normParams::DataFrame)
+    normTrainData(x::DataFrame, normParams::DataFrame)
 
 Normalise every column of training data with the params.
 
@@ -453,6 +477,7 @@ Converts the training data to an Array of type Float32.
 
 # Arguments:
 - `data`: Data to be converted
+
 Returns: training data in Float32
 """
 function convertTrainingData(data)::Array{Float32,2}

@@ -28,7 +28,7 @@ end
         xdim = 10
         ydim = 10
         x = GigaSOM.convertTrainingData(df_som)
-        codes = GigaSOM.rowSample(x, xdim * ydim)
+        codes = GigaSOM.x[rand(1:size(x,1), xdim * ydim),:]
         @test size(codes) == (100, 10)
         @test typeof(codes) == Array{Float32, 2}
         grid = GigaSOM.gridRectangular(xdim, ydim)
@@ -64,7 +64,7 @@ som2 = initGigaSOM(df_som, 10, 10)
 
 end
 
-@time som2 = trainGigaSOM(som2, df_som, epochs = 10)
+@time som2 = trainGigaSOM(som2, df_som, epochs = 2)
 
 mywinners = mapToGigaSOM(som2, df_som)
 CSV.write("cell_clustering_som.csv", mywinners)

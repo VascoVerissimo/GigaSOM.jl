@@ -55,20 +55,20 @@ print(panel.fcs_colname)
 lineage_markers, functional_markers = getMarkers(panel)
 
 fcs_raw = readFlowset(md.file_name)
-cleannames!(fcs_raw)
+cleanNames!(fcs_raw)
 
 # subset the data
 # transform the data
 # create daFrame file
-daf = create_daFrame(fcs_raw, md, panel)
+daf = createDaFrame(fcs_raw, md, panel)
 
 # change the directory back to the current directory
 cd(cwd)
 
 CSV.write(genDataPath*"/daf.csv", daf.fcstable)
 
-#test cleannames
-@testset "cleannames" begin
+#test cleanNames
+@testset "cleanNames" begin
     for i in eachindex(lineage_markers)
             test_clean = @test !in("-",i)
             return test_clean
