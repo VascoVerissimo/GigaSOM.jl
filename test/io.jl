@@ -54,7 +54,7 @@ print(panel.fcs_colname)
 
 lineage_markers, functional_markers = getMarkers(panel)
 
-fcs_raw = readflowset(md.file_name)
+fcs_raw = readFlowset(md.file_name)
 cleannames!(fcs_raw)
 
 # subset the data
